@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<Devices>
+    <Device type="sensor" id="tankSensor">
+        <Name>Tank Sensor</Name>
+        <ConfigUI>
+            <SupportURL>http://forums.indigodomo.com/viewforum.php?f=214</SupportURL>
+			<Field id="SupportsOnState"       type="checkbox" defaultValue="false" hidden="true" />
+			<Field id="SupportsSensorValue"   type="checkbox" defaultValue="true"  hidden="true" />
+			<Field id="SupportsStatusRequest" type="checkbox" defaultValue="true"  hidden="true" />
+            <Field id="address" type="textfield"  readonly="true" />
+        </ConfigUI>
+        <States>
+            <State id="last_value">
+   				<ValueType>Float</ValueType>
+				<TriggerLabel>Last Measurement</TriggerLabel>
+				<ControlPageLabel>Last</ControlPageLabel>
+            </State>
+            <State id="temperature">
+   				<ValueType>Float</ValueType>
+				<TriggerLabel>Tank Temperature</TriggerLabel>
+				<ControlPageLabel>Temperature</ControlPageLabel>
+            </State>
+            <State id="last_update">
+   				<ValueType>String</ValueType>
+				<TriggerLabel>Last Update</TriggerLabel>
+				<ControlPageLabel>>Last Update</ControlPageLabel>
+            </State>
+            <State id="owner_name">
+   				<ValueType>String</ValueType>
+				<TriggerLabel>Tank Temperature</TriggerLabel>
+				<ControlPageLabel>Temperature</ControlPageLabel>
+            </State>
+            <State id="tank_address">
+   				<ValueType>String</ValueType>
+				<TriggerLabel>Tank Address</TriggerLabel>
+				<ControlPageLabel>Address</ControlPageLabel>
+            </State>
+            <State id="capacity">
+   				<ValueType>String</ValueType>
+				<TriggerLabel>Tank Capacity</TriggerLabel>
+				<ControlPageLabel>Capacity</ControlPageLabel>
+            </State>
+        </States>
+    </Device>
+</Devices>

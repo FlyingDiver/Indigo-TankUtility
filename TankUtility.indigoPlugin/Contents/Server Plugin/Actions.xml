@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Actions>
+    <SupportURL>http://forums.indigodomo.com/viewforum.php?f=214</SupportURL>
+    <Action id="getDevices">
+        <Name>Update Sensors</Name>
+        <CallbackMethod>getDevices</CallbackMethod>
+    </Action>
+</Actions>

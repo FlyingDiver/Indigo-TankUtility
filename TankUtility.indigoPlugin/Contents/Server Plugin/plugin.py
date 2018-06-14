@@ -2,14 +2,9 @@
 # -*- coding: utf-8 -*-
 ####################
 
-
-import sys
 import time
 import requests
 import logging
-
-from requests.auth import HTTPBasicAuth
-from requests.utils import quote
 
 BASE_URL = "https://data.tankutility.com/api/"
 
@@ -164,6 +159,7 @@ class Plugin(indigo.PluginBase):
 
     def getDevices(self):
 
+        indigo.server.log(u"Getting tank data from TankUtility server...")
         
         if not self.tuLogin(self.pluginPrefs.get('tuLogin', None), self.pluginPrefs.get('tuPassword')):
             self.logger.debug(u"getDevices: TankUtility Login Failure")
@@ -185,7 +181,7 @@ class Plugin(indigo.PluginBase):
             response.raise_for_status
 
             tank_data = response.json()
-            self.logger.debug(u"getDevices:\n{}\n".format(tank_data))
+            self.logger.debug(u"getDevices: Tank {} data =\n{}\n".format(tuDevice, tank_data))
 
             keyValueList = []
 
@@ -228,7 +224,9 @@ class Plugin(indigo.PluginBase):
             temperatureStr = "{:.1f} °F".format(temperature)
             keyValueList.append({'key': 'temperature', 'value': temperature, 'uiValue':temperatureStr})
 
-            keyValueList.append({'key': 'last_update', 'value': tank_data['device']['lastReading']['time_iso']})
+            last_update = float(tank_data['device']['lastReading']['time']) / 1000.0
+            timeStr = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime(last_update))
+            keyValueList.append({'key': 'last_update', 'value': timeStr})
 
             tank_dev.updateStatesOnServer(keyValueList)
 

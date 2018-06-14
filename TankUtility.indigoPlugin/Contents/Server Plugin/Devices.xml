@@ -10,11 +10,6 @@
             <Field id="address" type="textfield"  readonly="true" />
         </ConfigUI>
         <States>
-            <State id="last_value">
-   				<ValueType>Float</ValueType>
-				<TriggerLabel>Last Measurement</TriggerLabel>
-				<ControlPageLabel>Last</ControlPageLabel>
-            </State>
             <State id="temperature">
    				<ValueType>Float</ValueType>
 				<TriggerLabel>Tank Temperature</TriggerLabel>

@@ -29,39 +29,21 @@ class Plugin(indigo.PluginBase):
     
 
     def startup(self):
-        indigo.server.log(u"Starting TankUtility")
-
+        self.logger.info(u"Starting TankUtility")
         self.tuDevices = {}
-
-        self.statusFrequency = float(self.pluginPrefs.get('statusFrequency', "12")) * 60.0 * 60.0
-        self.logger.debug(u"statusFrequency = " + str(self.statusFrequency))
-        self.next_status_check = time.time()
 
 
     def shutdown(self):
-        indigo.server.log(u"Shutting down TankUtility")
+        self.logger.info(u"Shutting down TankUtility")
 
-
-    def runConcurrentThread(self):
-
-        try:
-            while True:
-
-                if time.time() > self.next_status_check:
-                    self.getDevices()
-                    self.next_status_check = time.time() + self.statusFrequency
-
-                self.sleep(60.0)
-
-        except self.stopThread:
-            pass
 
     def deviceStartComm(self, device):
 
         self.logger.debug("deviceStartComm: Adding Device %s (%d) to TankUtility device list" % (device.name, device.id))
         assert device.id not in self.tuDevices
         self.tuDevices[device.id] = device
-
+        device.stateListOrDisplayStateIdChanged()
+        
     def deviceStopComm(self, device):
         self.logger.debug("deviceStopComm: Removing Device %s (%d) from TankUtility device list" % (device.name, device.id))
         assert device.id in self.tuDevices
@@ -102,12 +84,6 @@ class Plugin(indigo.PluginBase):
                 self.logLevel = logging.INFO
             self.indigo_log_handler.setLevel(self.logLevel)
             self.logger.debug(u"logLevel = " + str(self.logLevel))
-
-            self.statusFrequency = float(self.pluginPrefs.get('statusFrequency', "10")) * 60.0 * 60.0
-            self.logger.debug(u"statusFrequency = " + str(self.statusFrequency))
-            self.next_status_check = time.time() + self.statusFrequency
-
-            self.getDevices()
 
     ########################################
 
@@ -159,7 +135,7 @@ class Plugin(indigo.PluginBase):
 
     def getDevices(self):
 
-        indigo.server.log(u"Getting tank data from TankUtility server...")
+        self.logger.info(u"Getting tank data from TankUtility server...")
         
         if not self.tuLogin(self.pluginPrefs.get('tuLogin', None), self.pluginPrefs.get('tuPassword')):
             self.logger.debug(u"getDevices: TankUtility Login Failure")
@@ -171,7 +147,6 @@ class Plugin(indigo.PluginBase):
         response.raise_for_status
         
         devices_data = response.json()
-        self.logger.debug(u"getDevices: %d Devices" % len(devices_data['devices']))
 
         for tuDevice in devices_data['devices']:
         
@@ -217,7 +192,7 @@ class Plugin(indigo.PluginBase):
 
 
             tank = tank_data['device']['lastReading']['tank']
-            tankStr = "{:.1f} %".format(tank)
+            tankStr = "{:.2f} %".format(tank)
             keyValueList.append({'key': 'sensorValue', 'value': tank, 'uiValue': tankStr})
 
             temperature = tank_data['device']['lastReading']['temperature']
@@ -233,3 +208,48 @@ class Plugin(indigo.PluginBase):
 
     ########################################
 
+    def doDaily(self):
+
+        self.logger.info(u"Performing daily calculations...")
+        self.getDevices()
+                
+        iterator = indigo.devices.iter(filter="self.tankSensor")
+        for dev in iterator:
+
+            keyValueList = []
+
+            previous_reading = float(dev.states['previous_reading'])
+            self.logger.debug(u"doDaily: previous reading {:.2f} %".format(previous_reading))
+            
+            current_reading = float(dev.sensorValue)
+            self.logger.debug(u"doDaily: current reading {:.2f} %".format(current_reading))
+            
+            usage = (previous_reading - current_reading) * float(dev.states['capacity'])
+            self.logger.debug(u"doDaily: Daily usage {:.2f} gallons".format(usage))
+                    
+            keyValueList.append({'key': 'daily_usage', 'value': usage})
+            keyValueList.append({'key': 'previous_reading', 'value': current_reading})
+            dev.updateStatesOnServer(keyValueList)
+       
+    def doMonthly(self):
+
+        self.logger.info(u"Performing monthly calculations...")
+                
+        iterator = indigo.devices.iter(filter="self.tankSensor")
+        for dev in iterator:
+
+            keyValueList = []
+            
+            monthly_reading = float(dev.states['monthly_reading'])
+            self.logger.debug(u"doMonthly: previous monthly reading {:.2f} %".format(monthly_reading))
+            
+            current_reading = float(dev.sensorValue)
+            self.logger.debug(u"doMonthly: current reading {:.2f} %".format(current_reading))
+            
+            monthly_usage = (monthly_reading - current_reading) * float(dev.states['capacity'])
+            self.logger.debug(u"doMonthly: Monthly usage {:.2f} gallons".format(monthly_usage))
+                    
+            keyValueList.append({'key': 'monthly_reading', 'value': current_reading})
+            keyValueList.append({'key': 'monthly_usage', 'value': monthly_usage})
+            dev.updateStatesOnServer(keyValueList)
+       

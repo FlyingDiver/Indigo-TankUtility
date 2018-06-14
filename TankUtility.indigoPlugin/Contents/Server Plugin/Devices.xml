@@ -11,7 +11,7 @@
         </ConfigUI>
         <States>
             <State id="temperature">
-   				<ValueType>Float</ValueType>
+   				<ValueType>Number</ValueType>
 				<TriggerLabel>Tank Temperature</TriggerLabel>
 				<ControlPageLabel>Temperature</ControlPageLabel>
             </State>
@@ -21,7 +21,7 @@
 				<ControlPageLabel>>Last Update</ControlPageLabel>
             </State>
             <State id="owner_name">
-   				<ValueType>String</ValueType>
+   				<ValueType>Float</ValueType>
 				<TriggerLabel>Tank Temperature</TriggerLabel>
 				<ControlPageLabel>Temperature</ControlPageLabel>
             </State>
@@ -31,9 +31,29 @@
 				<ControlPageLabel>Address</ControlPageLabel>
             </State>
             <State id="capacity">
-   				<ValueType>String</ValueType>
+   				<ValueType>Number</ValueType>
 				<TriggerLabel>Tank Capacity</TriggerLabel>
 				<ControlPageLabel>Capacity</ControlPageLabel>
+            </State>
+            <State id="previous_reading">
+   				<ValueType>Number</ValueType>
+				<TriggerLabel>Previous Reading</TriggerLabel>
+				<ControlPageLabel>Previous</ControlPageLabel>
+            </State>
+            <State id="daily_usage">
+   				<ValueType>Number</ValueType>
+				<TriggerLabel>Daily Usage</TriggerLabel>
+				<ControlPageLabel>Daily Usage</ControlPageLabel>
+            </State>
+            <State id="monthly_reading">
+   				<ValueType>Number</ValueType>
+				<TriggerLabel>Previous Monthly Reading</TriggerLabel>
+				<ControlPageLabel>Previous Monthly</ControlPageLabel>
+            </State>
+            <State id="monthly_usage">
+   				<ValueType>Number</ValueType>
+				<TriggerLabel>Monthly Usage</TriggerLabel>
+				<ControlPageLabel>Monthly Usage</ControlPageLabel>
             </State>
         </States>
     </Device>

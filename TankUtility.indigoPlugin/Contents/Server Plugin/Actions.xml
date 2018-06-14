@@ -5,4 +5,12 @@
         <Name>Update Sensors</Name>
         <CallbackMethod>getDevices</CallbackMethod>
     </Action>
+    <Action id="doDaily">
+        <Name>Daily Processing</Name>
+        <CallbackMethod>doDaily</CallbackMethod>
+    </Action>
+    <Action id="doMonthly">
+        <Name>Monthly Processing</Name>
+        <CallbackMethod>doMonthly</CallbackMethod>
+    </Action>
 </Actions>

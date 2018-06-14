@@ -7,9 +7,6 @@
     <Field id="tuPassword" type="textfield" secure="true">
         <Label>Password:</Label>
     </Field>
-    <Field id="statusFrequency" type="textfield" defaultValue="24">
-        <Label>Update sensor status frequency (hours):</Label>
-    </Field>
     <Field id="sep2" type="separator"/>
     <Field id="logLevel" type="menu" defaultValue="20">
         <Label>Event Logging Level:</Label>

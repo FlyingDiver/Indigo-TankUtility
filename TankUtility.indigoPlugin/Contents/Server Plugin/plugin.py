@@ -186,9 +186,10 @@ class Plugin(indigo.PluginBase):
                     self.logger.error(u'Error Creating Sensor Device: %s' % (tuDevice))
                     continue
 
-                keyValueList.append({'key': 'owner_name', 'value': tank_data['device']['name']})
+                keyValueList.append({'key': 'owner_name', 'value':   tank_data['device']['name']})
                 keyValueList.append({'key': 'tank_address', 'value': tank_data['device']['address']})
-                keyValueList.append({'key': 'capacity', 'value': tank_data['device']['capacity']})
+                keyValueList.append({'key': 'capacity', 'value':     tank_data['device']['capacity']})
+                keyValueList.append({'key': 'fuel_type', 'value':    tank_data['device']['fuelType']})
 
 
             tank = tank_data['device']['lastReading']['tank']
@@ -208,7 +209,10 @@ class Plugin(indigo.PluginBase):
 
     ########################################
 
-    def doDaily(self):
+    def getDevicesAction(self, pluginAction):
+        self.getDevices()
+
+    def doDailyAction(self, pluginAction):
 
         self.logger.info(u"Performing daily calculations...")
         self.getDevices()
@@ -231,7 +235,7 @@ class Plugin(indigo.PluginBase):
             keyValueList.append({'key': 'previous_reading', 'value': current_reading})
             dev.updateStatesOnServer(keyValueList)
        
-    def doMonthly(self):
+    def doMonthlyAction(self, pluginAction):
 
         self.logger.info(u"Performing monthly calculations...")
                 

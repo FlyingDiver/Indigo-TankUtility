@@ -21,9 +21,9 @@
 				<ControlPageLabel>>Last Update</ControlPageLabel>
             </State>
             <State id="owner_name">
-   				<ValueType>Float</ValueType>
-				<TriggerLabel>Tank Temperature</TriggerLabel>
-				<ControlPageLabel>Temperature</ControlPageLabel>
+   				<ValueType>String</ValueType>
+				<TriggerLabel>Owner Name</TriggerLabel>
+				<ControlPageLabel>Owner Name</ControlPageLabel>
             </State>
             <State id="tank_address">
    				<ValueType>String</ValueType>
@@ -34,6 +34,11 @@
    				<ValueType>Number</ValueType>
 				<TriggerLabel>Tank Capacity</TriggerLabel>
 				<ControlPageLabel>Capacity</ControlPageLabel>
+            </State>
+            <State id="fuel_type">
+   				<ValueType>String</ValueType>
+				<TriggerLabel>Fuel Type</TriggerLabel>
+				<ControlPageLabel>Fuel Type</ControlPageLabel>
             </State>
             <State id="previous_reading">
    				<ValueType>Number</ValueType>

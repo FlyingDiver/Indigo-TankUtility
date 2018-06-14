@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <Actions>
     <SupportURL>http://forums.indigodomo.com/viewforum.php?f=214</SupportURL>
-    <Action id="getDevices">
+    <Action id="getDevicesAction">
         <Name>Update Sensors</Name>
-        <CallbackMethod>getDevices</CallbackMethod>
+        <CallbackMethod>getDevicesAction</CallbackMethod>
     </Action>
-    <Action id="doDaily">
+    <Action id="doDailyAction">
         <Name>Daily Processing</Name>
-        <CallbackMethod>doDaily</CallbackMethod>
+        <CallbackMethod>doDailyAction</CallbackMethod>
     </Action>
-    <Action id="doMonthly">
+    <Action id="doMonthlyAction">
         <Name>Monthly Processing</Name>
-        <CallbackMethod>doMonthly</CallbackMethod>
+        <CallbackMethod>doMonthlyAction</CallbackMethod>
     </Action>
 </Actions>

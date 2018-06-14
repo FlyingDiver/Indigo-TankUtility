@@ -108,7 +108,7 @@ class Plugin(indigo.PluginBase):
             self.indigo_log_handler.setLevel(self.logLevel)
             self.logger.debug(u"logLevel = " + str(self.logLevel))
 
-            self.statusFrequency = float(self.pluginPrefs.get('statusFrequency', "10")) * 60.0
+            self.statusFrequency = float(self.pluginPrefs.get('statusFrequency', "10")) * 60.0 * 60.0
             self.logger.debug(u"statusFrequency = " + str(self.statusFrequency))
             self.next_status_check = time.time() + self.statusFrequency
 

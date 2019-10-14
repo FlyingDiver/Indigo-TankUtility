@@ -108,7 +108,7 @@ class Plugin(indigo.PluginBase):
 
         url = BASE_URL + 'getToken'
         try:
-            response = requests.get(url, auth=(username, password))
+            response = requests.get(url, auth=(username, password), verify=False)
         except requests.exceptions.RequestException as err:
             self.logger.debug(u"tuLogin failure, request url = %s" % (url))
             self.logger.error(u"tuLogin failure, RequestException: %s" % (str(err)))
@@ -143,7 +143,7 @@ class Plugin(indigo.PluginBase):
 
         url =  BASE_URL + 'devices'
         params = { 'token':self.securityToken }
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, verify=False)
         response.raise_for_status
         
         devices_data = response.json()
@@ -152,7 +152,7 @@ class Plugin(indigo.PluginBase):
         
             url =  BASE_URL + 'devices/' + tuDevice
             params = { 'token':self.securityToken }
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, verify=False)
             response.raise_for_status
 
             tank_data = response.json()
@@ -214,13 +214,13 @@ class Plugin(indigo.PluginBase):
 
     def doDailyAction(self, pluginAction):
 
-        self.logger.info(u"Performing daily calculations...")
-        self.getDevices()
+        self.getDevices()   # get an update
                 
         iterator = indigo.devices.iter(filter="self.tankSensor")
         for dev in iterator:
+            self.logger.info(u"{}: Performing daily calculations...".format(dev.name))
 
-            keyValueList = []
+            state_list = []
 
             previous_reading = float(dev.states['previous_reading'])
             self.logger.debug(u"doDaily: previous reading {:.2f} %".format(previous_reading))
@@ -228,21 +228,30 @@ class Plugin(indigo.PluginBase):
             current_reading = float(dev.sensorValue)
             self.logger.debug(u"doDaily: current reading {:.2f} %".format(current_reading))
             
-            usage = (previous_reading - current_reading) * float(dev.states['capacity'])
+            if current_reading > previous_reading:
+                self.logger.debug(u"doDaily: Tank refilled, resetting")
+                usage = 0.0
+
+            else:                
+                usage = ((previous_reading - current_reading) / 100.0) * float(dev.states['capacity'])
+ 
             self.logger.debug(u"doDaily: Daily usage {:.2f} gallons".format(usage))
-                    
-            keyValueList.append({'key': 'daily_usage', 'value': usage})
-            keyValueList.append({'key': 'previous_reading', 'value': current_reading})
-            dev.updateStatesOnServer(keyValueList)
+
+            current_month_usage = float(dev.states['current_month_usage'])
+            self.logger.debug(u"doDaily: Current month usage {:.2f} gallons".format(current_month_usage))
+                   
+            state_list.append({'key': 'daily_usage', 'value': usage})
+            state_list.append({'key': 'previous_reading', 'value': current_reading})
+            state_list.append({'key': 'current_month_usage', 'value': (current_month_usage + usage)})
+            dev.updateStatesOnServer(state_list)
        
     def doMonthlyAction(self, pluginAction):
-
-        self.logger.info(u"Performing monthly calculations...")
                 
         iterator = indigo.devices.iter(filter="self.tankSensor")
         for dev in iterator:
+            self.logger.info(u"{}: Performing monthly calculations...".format(dev.name))
 
-            keyValueList = []
+            state_list = []
             
             monthly_reading = float(dev.states['monthly_reading'])
             self.logger.debug(u"doMonthly: previous monthly reading {:.2f} %".format(monthly_reading))
@@ -250,10 +259,12 @@ class Plugin(indigo.PluginBase):
             current_reading = float(dev.sensorValue)
             self.logger.debug(u"doMonthly: current reading {:.2f} %".format(current_reading))
             
-            monthly_usage = (monthly_reading - current_reading) * float(dev.states['capacity'])
+            monthly_usage = float(dev.states['current_month_usage'])
+            
             self.logger.debug(u"doMonthly: Monthly usage {:.2f} gallons".format(monthly_usage))
                     
-            keyValueList.append({'key': 'monthly_reading', 'value': current_reading})
-            keyValueList.append({'key': 'monthly_usage', 'value': monthly_usage})
+            state_list.append({'key': 'monthly_reading', 'value': current_reading})
+            state_list.append({'key': 'monthly_usage', 'value': monthly_usage})
+            state_list.append({'key': 'current_month_usage', 'value': 0.0})
             dev.updateStatesOnServer(keyValueList)
        

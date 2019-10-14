@@ -57,8 +57,13 @@
             </State>
             <State id="monthly_usage">
    				<ValueType>Number</ValueType>
-				<TriggerLabel>Monthly Usage</TriggerLabel>
-				<ControlPageLabel>Monthly Usage</ControlPageLabel>
+				<TriggerLabel>Previous Month Usage</TriggerLabel>
+				<ControlPageLabel>Previous Month Usage</ControlPageLabel>
+            </State>
+            <State id="current_month_usage">
+   				<ValueType>Number</ValueType>
+				<TriggerLabel>Current Month Usage</TriggerLabel>
+				<ControlPageLabel>Current Month Usage</ControlPageLabel>
             </State>
         </States>
     </Device>

@@ -266,5 +266,5 @@ class Plugin(indigo.PluginBase):
             state_list.append({'key': 'monthly_reading', 'value': current_reading})
             state_list.append({'key': 'monthly_usage', 'value': monthly_usage})
             state_list.append({'key': 'current_month_usage', 'value': 0.0})
-            dev.updateStatesOnServer(keyValueList)
+            dev.updateStatesOnServer(state_list)
        

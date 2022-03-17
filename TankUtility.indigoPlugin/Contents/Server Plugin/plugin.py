@@ -89,7 +89,7 @@ class Plugin(indigo.PluginBase):
 
         url = BASE_URL + 'getToken'
         try:
-            response = requests.get(url, auth=(username, password), verify=False)
+            response = requests.get(url, auth=(username, password))
         except requests.exceptions.RequestException as err:
             self.logger.debug(f"tuLogin failure, request url = {url}, RequestException: {str(err)}")
             self.securityToken = ""
@@ -124,7 +124,7 @@ class Plugin(indigo.PluginBase):
         tank_dev = None
         url = BASE_URL + 'devices'
         params = {'token': self.securityToken}
-        response = requests.get(url, params=params, verify=False)
+        response = requests.get(url, params=params)
         response.raise_for_status()
 
         devices_data = response.json()
@@ -133,7 +133,7 @@ class Plugin(indigo.PluginBase):
 
             url = BASE_URL + 'devices/' + tuDevice
             params = {'token': self.securityToken}
-            response = requests.get(url, params=params, verify=False)
+            response = requests.get(url, params=params)
             response.raise_for_status()
 
             tank_data = response.json()

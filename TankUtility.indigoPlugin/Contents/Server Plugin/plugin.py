@@ -238,3 +238,39 @@ class Plugin(indigo.PluginBase):
                           {'key': 'monthly_usage', 'value': monthly_usage},
                           {'key': 'current_month_usage', 'value': 0.0}]
             dev.updateStatesOnServer(state_list)
+
+    def doTestAction(self, pluginAction):
+
+        tank_data = {'device':  {'device_id': '0025002e3434383209473931', 'short_device_id': 'LGD3DPKR', 'name': 'VMP', 'address': 'x', 'account_id': '', 'fuel_type': 'propane', 'status': 'deployed', 'capacity': 500, 'orientation': 'horizontal', 'consumption_types': '', 'battery_warn': True, 'battery_crit': False, 'battery_level': 'warning', 'average_consumption': 1.214285714285714, 'estimated_fill_date': '2022-08-12T00:10:19.261Z', 'fixed_transmission_time': -1, 'reading_interval': 21600, 'transmission_interval': 86400, 'threshold_1': -1, 'threshold_2': -1, 'change_of_value': -1, 'lastReading': {'tank': 67.26823999999999, 'temperature': 64.995, 'time': 1644111702000, 'time_iso': '2022-02-06T01:41:42.000Z', 'sw_rev': '4.078', 'event_code': 131336, 'fixed_transmission_time': -1, 'reading_interval': 21600, 'transmission_interval': 86400, 'threshold_1': -1, 'threshold_2': -1, 'change_of_value': -1}}}
+
+        try:
+            tank_dev = indigo.device.create(protocol=indigo.kProtocol.Plugin,
+                                            address="123456789",
+                                            description="Tank Sensor Device auto-created by TankUtility plugin",
+                                            deviceTypeId='tankSensor',
+                                            props={'AllowOnStateChange': False,
+                                                   'SupportsOnState': False,
+                                                   'SupportsSensorValue': True,
+                                                   'SupportsStatusRequest': True
+                                                   },
+                                            name="TankUtility 123456789")
+        except Exception as err:
+            self.logger.error(f'Error Creating Sensor Device')
+            return
+
+        keyValueList = [{'key': 'owner_name', 'value': tank_data['device']['name']},
+                        {'key': 'tank_address', 'value': tank_data['device']['address']},
+                        {'key': 'capacity', 'value': tank_data['device']['capacity']},
+                        {'key': 'fuel_type', 'value': tank_data['device']['fuel_type']}]
+
+        tank = tank_data['device']['lastReading']['tank']
+        keyValueList.append({'key': 'sensorValue', 'value': tank, 'uiValue': f"{tank:.2f} %"})
+
+        temperature = tank_data['device']['lastReading']['temperature']
+        keyValueList.append({'key': 'temperature', 'value': temperature, 'uiValue': f"{temperature:.1f} °F"})
+
+        last_update = float(tank_data['device']['lastReading']['time']) / 1000.0
+        timeStr = time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime(last_update))
+        keyValueList.append({'key': 'last_update', 'value': timeStr})
+
+        self.logger.info("{}".format(keyValueList))

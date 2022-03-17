@@ -13,8 +13,4 @@
         <Name>Monthly Processing</Name>
         <CallbackMethod>doMonthlyAction</CallbackMethod>
     </Action>
-    <Action id="doTestAction">
-        <Name>Test Processing</Name>
-        <CallbackMethod>doTestAction</CallbackMethod>
-    </Action>
 </Actions>

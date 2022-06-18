@@ -6,7 +6,7 @@ import time
 import requests
 import logging
 
-BASE_URL = "https://data.tankutility.com/api/"
+BASE_URL = "https://data.tankutility.com/api"
 
 
 ################################################################################
@@ -27,21 +27,15 @@ class Plugin(indigo.PluginBase):
         self.tuDevices = {}
         self.securityToken = None
 
-    def startup(self):
-        self.logger.info("Starting TankUtility")
-
-    def shutdown(self):
-        self.logger.info("Shutting down TankUtility")
-
     def deviceStartComm(self, device):
 
-        self.logger.debug(f"deviceStartComm: Adding Device {device.name} ({device.id:d}) to TankUtility device list")
+        self.logger.debug(f"{device.name}: starting device {device.id}")
         assert device.id not in self.tuDevices
         self.tuDevices[device.id] = device
         device.stateListOrDisplayStateIdChanged()
 
     def deviceStopComm(self, device):
-        self.logger.debug(f"deviceStopComm: Removing Device {device.name} ({device.id:d}) from TankUtility device list")
+        self.logger.debug(f"{device.name}: stopping device {device.id}")
         assert device.id in self.tuDevices
         del self.tuDevices[device.id]
 
@@ -87,9 +81,8 @@ class Plugin(indigo.PluginBase):
             self.logger.debug("tuLogin failure, Username or Password not set")
             return False
 
-        url = BASE_URL + 'getToken'
         try:
-            response = requests.get(url, auth=(username, password))
+            response = requests.get(f"{BASE_URL}/getToken", auth=(username, password))
         except requests.exceptions.RequestException as err:
             self.logger.debug(f"tuLogin failure, request url = {url}, RequestException: {str(err)}")
             self.securityToken = ""
@@ -122,18 +115,16 @@ class Plugin(indigo.PluginBase):
             return
 
         tank_dev = None
-        url = BASE_URL + 'devices'
         params = {'token': self.securityToken}
-        response = requests.get(url, params=params)
+        response = requests.get(f"{BASE_URL}/devices", params=params)
         response.raise_for_status()
 
         devices_data = response.json()
 
         for tuDevice in devices_data['devices']:
 
-            url = BASE_URL + 'devices/' + tuDevice
             params = {'token': self.securityToken}
-            response = requests.get(url, params=params)
+            response = requests.get(f"{BASE_URL}/devices/{tuDevice}", params=params)
             response.raise_for_status()
 
             tank_data = response.json()
@@ -166,6 +157,7 @@ class Plugin(indigo.PluginBase):
 
             keyValueList = [{'key': 'owner_name', 'value': tank_data['device']['name']},
                             {'key': 'tank_address', 'value': tank_data['device']['address']},
+                            {'key': 'batteryLevel', 'value': tank_data['device']['battery_level']},
                             {'key': 'capacity', 'value': tank_data['device']['capacity']},
                             {'key': 'fuel_type', 'value': tank_data['device']['fuel_type']}]
 

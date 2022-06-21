@@ -157,7 +157,7 @@ class Plugin(indigo.PluginBase):
 
             keyValueList = [{'key': 'owner_name', 'value': tank_data['device']['name']},
                             {'key': 'tank_address', 'value': tank_data['device']['address']},
-                            {'key': 'batteryLevel', 'value': tank_data['device']['battery_level']},
+                            {'key': 'battery_level', 'value': tank_data['device']['battery_level']},
                             {'key': 'capacity', 'value': tank_data['device']['capacity']},
                             {'key': 'fuel_type', 'value': tank_data['device']['fuel_type']}]
 

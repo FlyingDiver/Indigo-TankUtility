@@ -4,10 +4,10 @@
         <Name>Tank Sensor</Name>
         <ConfigUI>
             <SupportURL>http://forums.indigodomo.com/viewforum.php?f=214</SupportURL>
+			<Field id="SupportsBatteryLevel"  type="checkbox" defaultValue="false" hidden="true" />
 			<Field id="SupportsOnState"       type="checkbox" defaultValue="false" hidden="true" />
 			<Field id="SupportsSensorValue"   type="checkbox" defaultValue="true"  hidden="true" />
 			<Field id="SupportsStatusRequest" type="checkbox" defaultValue="true"  hidden="true" />
-			<Field id="SupportsBatteryLevel"  type="checkbox" defaultValue="true"  hidden="true" />
             <Field id="address" type="textfield"  readonly="true" />
         </ConfigUI>
         <States>
@@ -35,6 +35,11 @@
    				<ValueType>Number</ValueType>
 				<TriggerLabel>Tank Capacity</TriggerLabel>
 				<ControlPageLabel>Capacity</ControlPageLabel>
+            </State>
+            <State id="battery_level">
+   				<ValueType>String</ValueType>
+				<TriggerLabel>Battery</TriggerLabel>
+				<ControlPageLabel>Battery</ControlPageLabel>
             </State>
             <State id="fuel_type">
    				<ValueType>String</ValueType>
